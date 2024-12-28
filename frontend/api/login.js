@@ -6,6 +6,11 @@ $("#submit").click(async function (e) {
     const email = $("#username").val();
     const password = $("#password").val();
 
+    if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+    }
+
     try {
         const response = await fetch(API_BASE_URL, {
             method: 'POST',
@@ -13,22 +18,18 @@ $("#submit").click(async function (e) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ email, password }),
-            mode:"no-cors"
         });
 
-        // Check if the response is OK (status code 2xx)
         if (response.ok) {
             const data = await response.json();
             alert('Login successful!');
+            console.log('Response:', data);
         } else {
-            // Try to parse error response as JSON or handle it as plain text
-            const errorData = await response.text();  // Read response as text if JSON is not available
-            alert(`Error: ${errorData}`);
+            const errorData = await response.json();
+            alert(`Error: ${errorData.message || 'Login failed.'}`);
         }
     } catch (error) {
         console.error('Error:', error);
-        alert('An error occurred while logging in.');
+        alert('An error occurred while logging in. Please check your network connection.');
     }
 });
-
- 
